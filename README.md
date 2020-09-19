@@ -1,7 +1,7 @@
 # CppND-Concurrent-Traffic-Simulation
 
 
-<img src="data/traffic_simulation.gif"/>
+<img src="traffic_simulation.gif"/>
 
 This is the project for the fourth course in the [Udacity C++ Nanodegree Program](https://www.udacity.com/course/c-plus-plus-nanodegree--nd213): Concurrency. 
 
@@ -38,3 +38,34 @@ When the project is built initially, all traffic lights will be green. When you 
 - **Task FP.4** : Implement the method `Send`, which should use the mechanisms `std::lock_guard<std::mutex>` as well as `_condition.notify_one()` to add a new message to the queue and afterwards send a notification. Also, in class `TrafficLight`, create a private member of type `MessageQueue` for messages of type `TrafficLightPhase` and use it within the infinite loop to push each new `TrafficLightPhase` into it by calling send in conjunction with move semantics.
 - **Task FP.5** : The method receive should use `std::unique_lock<std::mutex>` and `_condition.wait()` to wait for and receive new messages and pull them from the queue using move semantics. The received object should then be returned by the receive function. Then, add the implementation of the method `waitForGreen`, in which an infinite while-loop runs and repeatedly calls the `receive` function on the message queue. Once it receives `TrafficLightPhase::green`, the method returns.
 - **Task FP.6** : In class Intersection, add a private member `_trafficLight` of type `TrafficLight`. In method `Intersection::simulate()`, start the simulation of `_trafficLight`. Then, in method `Intersection::addVehicleToQueue`, use the methods `TrafficLight::getCurrentPhase` and `TrafficLight::waitForGreen` to block the execution until the traffic light turns green.
+
+## Steps Followed by code
+
+1. Simulate environment and start traffic lights to alternate between 4 to 6 milliseconds
+2. Start multiple cars on separate threads
+3. Cars slow down to 10% speed when 10% of the path remains
+4. Once it gets to the intersection, it waits for the traffic light to turn green 
+5. Once the traffic light turns green, it lets the promises to all the cars know
+6. The thread then permits cars to cross the intersection in the same order they came
+
+**This code makes sure that every time the mutual resources are used, they are locked and unlocked respectively.
+
+## File Descriptions
+
+### Graphics.h/cpp
+Used to render the graphics i.e the maps and traffic objects.
+
+### Trafficobjects.h/cpp
+All objects in the simulation are inherited from traffic objects and thus these files give them the basic characteristics
+
+### Street.h/cpp
+The streets of the simulation are inherited from traffic objects and are used to determine intersections
+
+### Intersection.h/cpp
+Intersections are used to determine when the vehicles should slow down and where the vehicles need to be to be added to the traffic light queu
+
+### Trafficlight.h/cpp
+Traffic lights are also traffic objects which notify the intersections that notify the vehicles when the red light turns green and they can exit the intersection
+
+### Vehicle.h/cpp
+Defines the vehicle object 
